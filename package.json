@@ -1,0 +1,11 @@
+{
+  "name": "authservice",
+  "version": "1.0.0",
+  "description": "Authentication Service for DS Coursework 2",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC"
+}
