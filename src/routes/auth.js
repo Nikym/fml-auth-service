@@ -1,8 +1,11 @@
 const Router = require('express-promise-router');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { v4: uuid } = require('uuid');
 
 const router = Router();
+
+const db = require('../db');
 
 const mockdb = {};
 
@@ -38,8 +41,8 @@ router.post('/login', async (req, res) => {
     return;
   }
 
-  // TODO: Change login to function with an actual database
-  const user = await models.instance.User.findOneAsync({ username });
+  const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+  const user = rows[0];
 
   if (user) {
     const { passwordHash } = user;
@@ -70,13 +73,35 @@ router.post('/login', async (req, res) => {
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
-  // TODO: Check if user already exists
+  if (!username || !password) {
+    res.status(400).json({ error: 'Fields username and password required' });
+    return;
+  }
+
+  if (username.length < 3 || username.includes(' ')) {
+    res.status(400).json({ error: 'Username is invalid' });
+  }
+
+  if (password.length < 8) {
+    res.status(400).json({ error: 'Password must be 8 characters or above' });
+  }
+
+  // Check if username already exists in DB
+  const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
+  if (rows.length > 0) {
+    res.status(400).json({ error: 'User already exists' });
+    return;
+  }
 
   const hash = await bcrypt.hash(password, 10);
+  const userId = uuid();
 
-  mockdb[username] = hash;
+  await db.query(
+    'INSERT INTO users(id, username, passwordHash) VALUES ($1, $2, $3)',
+    [userId, username, hash],
+  );
 
-  res.send('success');
+  res.status(200);
 });
 
 module.exports = router;
