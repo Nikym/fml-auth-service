@@ -1,6 +1,7 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
 const app = require('../../app');
+require('dotenv').config();
 
 describe('auth/login', () => {
   const getResponse = async (body) => request(app)
@@ -51,13 +52,11 @@ describe('auth/login', () => {
       password: 'password',
     });
 
-    const payload = jwt.verify(response.body, process.env.JWT_SECRET);
+    const payload = jwt.verify(response.body.token, process.env.JWT_SECRET);
 
     expect(response.statusCode).toBe(200);
-    expect(payload).toBe({
-      user_id: 1,
-      username: 'test',
-    });
+    expect(payload.id).toBe(1);
+    expect(payload.username).toBe('test');
   });
 
   it('sets refreshToken cookie if login credentials are correct', async () => {
