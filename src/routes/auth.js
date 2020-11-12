@@ -65,10 +65,12 @@ router.post('/register', async (req, res) => {
 
   if (username.length < 3 || username.includes(' ')) {
     res.status(400).json({ error: 'Username is invalid' });
+    return;
   }
 
   if (password.length < 8) {
     res.status(400).json({ error: 'Password must be 8 characters or above' });
+    return;
   }
 
   // Check if username already exists in DB
@@ -83,7 +85,7 @@ router.post('/register', async (req, res) => {
 
   await db.createUser(userId, username, hash);
 
-  res.status(200);
+  res.sendStatus(200);
 });
 
 module.exports = router;
