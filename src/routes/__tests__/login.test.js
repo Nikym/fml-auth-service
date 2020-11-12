@@ -65,7 +65,6 @@ describe('auth/login', () => {
       password: 'password',
     });
 
-    const tokenCookie = response.cookies;
-    console.log(tokenCookie);
+    expect(true).toBe(false);
   });
 });
