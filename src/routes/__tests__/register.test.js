@@ -2,6 +2,8 @@ const request = require('supertest');
 const app = require('../../app');
 require('dotenv').config();
 
+jest.mock('../../db');
+
 describe('auth/register', () => {
   const getResponse = async (body) => request(app)
     .post('/auth/register')

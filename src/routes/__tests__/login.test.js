@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 const app = require('../../app');
 require('dotenv').config();
 
+jest.mock('../../db');
+
 describe('auth/login', () => {
   const getResponse = async (body) => request(app)
     .post('/auth/login')
@@ -39,7 +41,7 @@ describe('auth/login', () => {
 
   it('returns 200 if login credentials are correct', async () => {
     const response = await getResponse({
-      username: 'test',
+      username: 'exists',
       password: 'password',
     });
 
