@@ -19,4 +19,8 @@ module.exports = {
     'INSERT INTO users(id, username, passwordHash) VALUES ($1, $2, $3)',
     [id, username, hash],
   ),
+  storeRefreshToken: (id, token) => pool.query(
+    'INSERT INTO token(id, token) VALUES ($1, $2)',
+    [id, token],
+  ),
 };

@@ -11,7 +11,10 @@ const getUserByUsername = jest.fn((username) => {
 
 const createUser = jest.fn();
 
+const storeRefreshToken = jest.fn();
+
 module.exports = {
   getUserByUsername,
   createUser,
+  storeRefreshToken,
 };
