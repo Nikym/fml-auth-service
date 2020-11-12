@@ -7,26 +7,6 @@ const router = Router();
 
 const db = require('../db');
 
-const mockdb = {};
-
-// Mock Cassandra db
-const models = {
-  instance: {
-    User: {
-      findOneAsync: (options) => {
-        if (options.username === 'test') {
-          return {
-            user_id: 1,
-            username: 'test',
-            passwordHash: '$2b$10$v5NKX/W63IsLjOOwVJ9bPOf9O8SLp3ioEm/OUo1c8yExlzW6tCDou',
-          };
-        }
-        return null;
-      },
-    },
-  },
-};
-
 /**
  * POST /auth/login business logic
  *
@@ -70,6 +50,12 @@ router.post('/login', async (req, res) => {
   res.status(401).json({ error: 'Username or password incorrect' });
 });
 
+/**
+ * POST /auth/register business logic
+ *
+ * Handles registering new users using details in given request body.
+ * If successful returns 200 OK, otherwise 400 Bad Request with an error message.
+ */
 router.post('/register', async (req, res) => {
   const { username, password } = req.body;
 
