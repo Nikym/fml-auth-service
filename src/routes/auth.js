@@ -1,8 +1,8 @@
-const express = require('express');
+const Router = require('express-promise-router');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
-const router = express.Router();
+const router = Router();
 
 const mockdb = {};
 
@@ -73,7 +73,6 @@ router.post('/register', async (req, res) => {
   // TODO: Check if user already exists
 
   const hash = await bcrypt.hash(password, 10);
-  console.log(hash);
 
   mockdb[username] = hash;
 

@@ -8,7 +8,7 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-const authRouter = require('./authRouter/authRouter');
+const authRouter = require('./routes/auth');
 
 app.use('/auth', authRouter);
 
