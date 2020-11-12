@@ -21,8 +21,7 @@ router.post('/login', async (req, res) => {
     return;
   }
 
-  const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-  const user = rows[0];
+  const user = await db.getUserByUsername(username);
 
   if (user) {
     const { passwordHash } = user;
@@ -73,8 +72,8 @@ router.post('/register', async (req, res) => {
   }
 
   // Check if username already exists in DB
-  const { rows } = await db.query('SELECT * FROM users WHERE username = $1', [username]);
-  if (rows.length > 0) {
+  const user = await db.getUserByUsername(username);
+  if (user) {
     res.status(400).json({ error: 'User already exists' });
     return;
   }
@@ -82,10 +81,7 @@ router.post('/register', async (req, res) => {
   const hash = await bcrypt.hash(password, 10);
   const userId = uuid();
 
-  await db.query(
-    'INSERT INTO users(id, username, passwordHash) VALUES ($1, $2, $3)',
-    [userId, username, hash],
-  );
+  await db.createUser(userId, username, hash);
 
   res.status(200);
 });
