@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
     if (await bcrypt.compare(password, passwordHash)) {
       const accessToken = jwt.sign(
         {
-          id: user.user_id,
+          id: user.id,
           username,
         },
         process.env.JWT_SECRET,
@@ -38,6 +38,24 @@ router.post('/login', async (req, res) => {
           expiresIn: '30m',
         },
       );
+
+      const refreshToken = jwt.sign(
+        {
+          created: new Date(),
+          id: user.id,
+        },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: '7d',
+        },
+      );
+
+      await db.storeRefreshToken(user.id, refreshToken);
+
+      res.cookie('refreshToken', refreshToken, {
+        expires: new Date(Date.now() + 3600000 * 24 * 7),
+        httpOnly: true,
+      });
 
       res.status(200).json({
         token: accessToken,
