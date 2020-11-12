@@ -1,12 +1,4 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-
-const app = express();
-app.use(cookieParser());
-
-const authRouter = require('./authRouter/authRouter');
-
-app.use('/auth', authRouter);
+const app = require('./app');
 
 app.listen({
   port: process.env.PORT || 8000,
