@@ -50,23 +50,23 @@ describe('auth/login', () => {
 
   it('returns JWT token if login credential are correct', async () => {
     const response = await getResponse({
-      username: 'test',
+      username: 'exists',
       password: 'password',
     });
 
     const payload = jwt.verify(response.body.token, process.env.JWT_SECRET);
 
     expect(response.statusCode).toBe(200);
-    expect(payload.id).toBe(1);
-    expect(payload.username).toBe('test');
+    expect(payload.id).toBe('1234');
+    expect(payload.username).toBe('exists');
   });
 
   it('sets refreshToken cookie if login credentials are correct', async () => {
     const response = await getResponse({
-      username: 'test',
+      username: 'exists',
       password: 'password',
     });
 
-    expect(true).toBe(false);
+    expect(response.headers['set-cookie'].length).toBe(1);
   });
 });
