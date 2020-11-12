@@ -11,6 +11,8 @@ on:
 
 jobs:
   build:
+    env:
+      JWT_SECRET: test
 
     runs-on: ubuntu-latest
 
