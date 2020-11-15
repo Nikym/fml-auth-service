@@ -106,4 +106,19 @@ router.post('/register', async (req, res) => {
   res.sendStatus(200);
 });
 
+router.get('/logout', async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    res.status(400).json({ error: 'Already logged out' });
+    return;
+  }
+
+  const { id } = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+  await db.deleteRefreshToken(id);
+
+  res.sendStatus(200);
+});
+
 module.exports = router;
