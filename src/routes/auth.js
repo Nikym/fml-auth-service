@@ -120,7 +120,19 @@ router.get('/logout', async (req, res) => {
     return;
   }
 
-  const { id } = jwt.verify(refreshToken, process.env.JWT_SECRET);
+  let payload;
+  try {
+    payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
+  } catch {
+    res.cookie('refreshToken', '', {
+      expires: new Date(Date.now() - 3600000 * 24),
+      httpOnly: true,
+    });
+    res.status(401).json({ error: 'Refresh token invalid' });
+    return;
+  }
+
+  const { id } = payload;
 
   await db.deleteRefreshToken(id);
 
@@ -130,6 +142,52 @@ router.get('/logout', async (req, res) => {
   });
 
   res.sendStatus(200);
+});
+
+router.get('/token', async (req, res) => {
+  const { refreshToken } = req.cookies;
+
+  if (!refreshToken) {
+    res.status(401).json({ error: 'User not logged in' });
+    return;
+  }
+
+  let payload;
+  try {
+    payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
+  } catch {
+    res.cookie('refreshToken', '', {
+      expires: new Date(Date.now() - 3600000 * 24),
+      httpOnly: true,
+    });
+    res.status(401).json({ error: 'Refresh token invalid' });
+    return;
+  }
+
+  const { id, username } = payload;
+  const storedToken = await db.getRefreshToken(id);
+
+  if (storedToken !== refreshToken) {
+    res.cookie('refreshToken', '', {
+      expires: new Date(Date.now() - 3600000 * 24),
+      httpOnly: true,
+    });
+    res.status(401).json({ error: 'Refresh token doesn\'t match stored token, has been removed' });
+    return;
+  }
+
+  const accessToken = jwt.sign(
+    {
+      id,
+      username,
+    },
+    process.env.JWT_SECRET,
+    {
+      expiresIn: '30m',
+    },
+  );
+
+  res.status(200).json({ token: accessToken });
 });
 
 module.exports = router;
