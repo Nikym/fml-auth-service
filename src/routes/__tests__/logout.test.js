@@ -27,5 +27,6 @@ describe('auth/logout', () => {
       .set('Cookie', ['refreshToken=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEyMzQiLCJ1c2VybmFtZSI6ImV4aXN0cyJ9.ioj2N0kWwS3lB9vr_magnS4fYZL3DPBTerFAPq6RblI; Path=/; HttpOnly']);
 
     expect(response.statusCode).toBe(200);
+    expect(response.headers['set-cookie'][0]).toContain('refreshToken=;');
   });
 });

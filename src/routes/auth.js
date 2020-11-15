@@ -106,6 +106,12 @@ router.post('/register', async (req, res) => {
   res.sendStatus(200);
 });
 
+/**
+ * GET /auth/logout business logic
+ *
+ * Handles logging user out of the website.
+ * When request sent, deletes refreshToken cookie if it is present.
+ */
 router.get('/logout', async (req, res) => {
   const { refreshToken } = req.cookies;
 
@@ -117,6 +123,11 @@ router.get('/logout', async (req, res) => {
   const { id } = jwt.verify(refreshToken, process.env.JWT_SECRET);
 
   await db.deleteRefreshToken(id);
+
+  res.cookie('refreshToken', '', {
+    expires: new Date(Date.now() - 3600000 * 24),
+    httpOnly: true,
+  });
 
   res.sendStatus(200);
 });
