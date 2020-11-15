@@ -23,4 +23,12 @@ module.exports = {
     'INSERT INTO token(id, token) VALUES ($1, $2)',
     [id, token],
   ),
+  getRefreshToken: async (id) => (await pool.query(
+    'SELECT * FROM tokens WHERE id = $1',
+    [id],
+  )).rows[0],
+  deleteRefreshToken: (id) => pool.query(
+    'DELETE FROM tokens WHERE id = $1',
+    [id],
+  ),
 };
