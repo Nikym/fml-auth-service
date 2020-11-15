@@ -21,6 +21,15 @@ describe('auth/token', () => {
     expect(response.statusCode).toBe(401);
   });
 
+  it('returns 401 if refresh token is invalid, and removes cookie', async () => {
+    const response = await request(app)
+      .get('/auth/token')
+      .set('Cookie', ['refreshToken=1234; httpOnly']);
+
+    expect(response.statusCode).toBe(401);
+    expect(response.headers['set-cookie'][0]).toContain('refreshToken=;');
+  });
+
   it('returns 401 if refresh token does not match stored, and remove refresh token cookie', async () => {
     const response = await request(app)
       .get('/auth/token')
