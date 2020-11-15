@@ -31,10 +31,10 @@ router.post('/login', async (req, res) => {
   const user = await db.getUserByUsername(username);
 
   if (user) {
-    const { passwordHash } = user;
+    const { passwordhash } = user;
 
     // Compare password to the stored hash password, if matches then create token
-    if (await bcrypt.compare(password, passwordHash)) {
+    if (await bcrypt.compare(password, passwordhash)) {
       const accessToken = jwt.sign(
         {
           id: user.id,

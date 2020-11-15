@@ -11,6 +11,12 @@ const pool = new Pool();
  * username, if exist.
  *
  * createUser adds user to a database.
+ *
+ * storeRefreshToken stores a refresh token thats associated with a user.
+ *
+ * getRefreshToken retrieves a given user's refresh token, if any.
+ *
+ * deleteRefreshToken removes refresh token associated with a particular user.
  */
 module.exports = {
   query: (text, params) => pool.query(text, params),
@@ -20,13 +26,13 @@ module.exports = {
     [id, username, hash],
   ),
   storeRefreshToken: (id, token) => pool.query(
-    'INSERT INTO token(id, token) VALUES ($1, $2)',
+    'INSERT INTO tokens(id, token) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET token = $2',
     [id, token],
   ),
   getRefreshToken: async (id) => (await pool.query(
     'SELECT * FROM tokens WHERE id = $1',
     [id],
-  )).rows[0],
+  )).rows[0].token,
   deleteRefreshToken: (id) => pool.query(
     'DELETE FROM tokens WHERE id = $1',
     [id],
