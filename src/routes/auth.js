@@ -7,6 +7,13 @@ const router = Router();
 
 const db = require('../db');
 
+const expireRefreshTokenCookie = (res) => {
+  res.cookie('refreshToken', '', {
+    expires: new Date(Date.now() - 3600000 * 24),
+    httpOnly: true,
+  });
+};
+
 /**
  * POST /auth/login business logic
  *
@@ -124,10 +131,7 @@ router.get('/logout', async (req, res) => {
   try {
     payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
   } catch {
-    res.cookie('refreshToken', '', {
-      expires: new Date(Date.now() - 3600000 * 24),
-      httpOnly: true,
-    });
+    expireRefreshTokenCookie(res);
     res.status(401).json({ error: 'Refresh token invalid' });
     return;
   }
@@ -136,14 +140,17 @@ router.get('/logout', async (req, res) => {
 
   await db.deleteRefreshToken(id);
 
-  res.cookie('refreshToken', '', {
-    expires: new Date(Date.now() - 3600000 * 24),
-    httpOnly: true,
-  });
+  expireRefreshTokenCookie(res);
 
   res.sendStatus(200);
 });
 
+/**
+ * GET /auth/token business logic
+ *
+ * Generates new access token for a user if refresh token is valid.
+ * If not valid, removes refresh token cookie from user.
+ */
 router.get('/token', async (req, res) => {
   const { refreshToken } = req.cookies;
 
@@ -156,10 +163,7 @@ router.get('/token', async (req, res) => {
   try {
     payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
   } catch {
-    res.cookie('refreshToken', '', {
-      expires: new Date(Date.now() - 3600000 * 24),
-      httpOnly: true,
-    });
+    expireRefreshTokenCookie(res);
     res.status(401).json({ error: 'Refresh token invalid' });
     return;
   }
@@ -168,10 +172,7 @@ router.get('/token', async (req, res) => {
   const storedToken = await db.getRefreshToken(id);
 
   if (storedToken !== refreshToken) {
-    res.cookie('refreshToken', '', {
-      expires: new Date(Date.now() - 3600000 * 24),
-      httpOnly: true,
-    });
+    expireRefreshTokenCookie(res);
     res.status(401).json({ error: 'Refresh token doesn\'t match stored token, has been removed' });
     return;
   }
