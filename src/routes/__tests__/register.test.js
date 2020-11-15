@@ -5,7 +5,7 @@ require('dotenv').config();
 jest.mock('../../db');
 
 describe('auth/register', () => {
-  const getResponse = async (body) => request(app)
+  const getResponse = (body) => request(app)
     .post('/auth/register')
     .send(body)
     .set('Content-Type', 'application/json');
