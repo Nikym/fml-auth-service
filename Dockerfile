@@ -1,5 +1,6 @@
 FROM node:13.8.0-alpine
-COPY . /app
-RUN cd /app
-RUN npm install
+WORKDIR /usr/src/app
+COPY package*.json ./
+RUN npm ci --only=production
+COPY . .
 ENTRYPOINT [ "npm", "run", "start" ]
