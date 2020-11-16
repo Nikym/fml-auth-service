@@ -20,21 +20,21 @@ const pool = new Pool();
  */
 module.exports = {
   query: (text, params) => pool.query(text, params),
-  getUserByUsername: async (username) => (await pool.query('SELECT * FROM users WHERE username = $1', [username])).rows[0],
+  getUserByUsername: async (username) => (await pool.query('SELECT * FROM journeys.users WHERE username = $1', [username])).rows[0],
   createUser: (id, username, hash) => pool.query(
-    'INSERT INTO users(id, username, passwordHash) VALUES ($1, $2, $3)',
+    'INSERT INTO journeys.users(id, username, passwordHash) VALUES ($1, $2, $3)',
     [id, username, hash],
   ),
   storeRefreshToken: (id, token) => pool.query(
-    'INSERT INTO tokens(id, token) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET token = $2',
+    'INSERT INTO journeys.tokens(id, token) VALUES ($1, $2) ON CONFLICT (id) DO UPDATE SET token = $2',
     [id, token],
   ),
   getRefreshToken: async (id) => (await pool.query(
-    'SELECT * FROM tokens WHERE id = $1',
+    'SELECT * FROM journeys.tokens WHERE id = $1',
     [id],
   )).rows[0].token,
   deleteRefreshToken: (id) => pool.query(
-    'DELETE FROM tokens WHERE id = $1',
+    'DELETE FROM journeys.tokens WHERE id = $1',
     [id],
   ),
 };
