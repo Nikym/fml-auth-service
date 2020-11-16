@@ -28,6 +28,8 @@ router.post('/login', async (req, res) => {
     return;
   }
 
+  // Check if the user exists in the database
+  // If user exists then we can carry on with authentication checks
   const user = await db.getUserByUsername(username);
 
   if (user) {
@@ -57,6 +59,7 @@ router.post('/login', async (req, res) => {
         },
       );
 
+      // Store the refresh token for later user when user needs new access token
       await db.storeRefreshToken(user.id, refreshToken);
 
       res.cookie('refreshToken', refreshToken, {
@@ -98,7 +101,7 @@ router.post('/register', async (req, res) => {
     return;
   }
 
-  // Check if username already exists in DB
+  // Check if user already exists in the database, if not carry on
   const user = await db.getUserByUsername(username);
   if (user) {
     res.status(400).json({ error: 'User already exists' });
@@ -127,6 +130,7 @@ router.get('/logout', async (req, res) => {
     return;
   }
 
+  // Check the refresh token is valid, if not then remove the cookie and show error
   let payload;
   try {
     payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
@@ -159,6 +163,7 @@ router.get('/token', async (req, res) => {
     return;
   }
 
+  // Similar to before, checking if token is valid
   let payload;
   try {
     payload = jwt.verify(refreshToken, process.env.JWT_SECRET);
@@ -171,6 +176,8 @@ router.get('/token', async (req, res) => {
   const { id, username } = payload;
   const storedToken = await db.getRefreshToken(id);
 
+  // If the refresh token is different, then user must be logged in elsewhere
+  // so log them out of this session
   if (storedToken !== refreshToken) {
     expireRefreshTokenCookie(res);
     res.status(401).json({ error: 'Refresh token doesn\'t match stored token, has been removed' });
