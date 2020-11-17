@@ -11,7 +11,9 @@ app.use(bodyParser.json());
 
 const authRouter = require('./routes/auth');
 
-app.use(cors());
+app.use(cors({
+  exposedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+}));
 app.use('/auth', authRouter);
 
 module.exports = app;
