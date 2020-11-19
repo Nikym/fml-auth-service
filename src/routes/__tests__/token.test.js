@@ -8,8 +8,7 @@ describe('auth/token', () => {
   it('returns 200 if access token succcessfuly refreshed', async () => {
     const response = await request(app)
       .get('/auth/token')
-      .set('Cookie', ['refreshToken=eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEyMzQiLCJ1c2VybmFtZSI6ImV4aXN0cyJ9.ioj2N0kWwS3lB9vr_magnS4fYZL3DPBTerFAPq6RblI; Path=/; HttpOnly']);
-
+      .set('Cookie', ['refreshToken=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWQiOiIxMjM0IiwidXNlcm5hbWUiOiJleGlzdHMiLCJpYXQiOjE1MTYyMzkwMjJ9.UtUmBzvod9dbYqykHf-ddJAJrwh4HSN5JWlwfiz0uCA; Path=/; HttpOnly']);
     expect(response.statusCode).toBe(200);
     expect(Object.keys(response.body)).toContain('token');
   });

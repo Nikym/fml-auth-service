@@ -13,7 +13,7 @@ const createUser = jest.fn();
 
 const storeRefreshToken = jest.fn();
 const getRefreshToken = jest.fn((id) => {
-  if (id === '1234') return 'eyJhbGciOiJIUzI1NiJ9.eyJpZCI6IjEyMzQiLCJ1c2VybmFtZSI6ImV4aXN0cyJ9.ioj2N0kWwS3lB9vr_magnS4fYZL3DPBTerFAPq6RblI';
+  if (id === '1234') return { token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwiaWQiOiIxMjM0IiwidXNlcm5hbWUiOiJleGlzdHMiLCJpYXQiOjE1MTYyMzkwMjJ9.UtUmBzvod9dbYqykHf-ddJAJrwh4HSN5JWlwfiz0uCA' };
 
   return undefined;
 });

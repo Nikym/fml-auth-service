@@ -181,7 +181,7 @@ router.get('/token', async (req, res) => {
     res.status(401).json({ error: 'Refresh token invalid' });
     return;
   }
-  const { token: storedToken } = storedData
+  const { token: storedToken } = storedData;
 
   // If the refresh token is different, then user must be logged in elsewhere
   // so log them out of this session
