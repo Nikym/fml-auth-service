@@ -15,8 +15,8 @@ app.use(cors({
   // exposedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
   credentials: true,
   origin: [
-    "http://localhost:8080",
-  ]
+    'http://localhost:8080',
+  ],
 }));
 app.use('/auth', authRouter);
 
