@@ -32,7 +32,7 @@ module.exports = {
   getRefreshToken: async (id) => (await pool.query(
     'SELECT * FROM journeys.tokens WHERE id = $1',
     [id],
-  )).rows[0].token,
+  )).rows[0],
   deleteRefreshToken: (id) => pool.query(
     'DELETE FROM journeys.tokens WHERE id = $1',
     [id],

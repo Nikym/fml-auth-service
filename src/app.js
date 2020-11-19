@@ -12,7 +12,11 @@ app.use(bodyParser.json());
 const authRouter = require('./routes/auth');
 
 app.use(cors({
-  exposedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  // exposedHeaders: ['Origin', 'X-Requested-With', 'Content-Type', 'Accept'],
+  credentials: true,
+  origin: [
+    "http://localhost:8080",
+  ]
 }));
 app.use('/auth', authRouter);
 

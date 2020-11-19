@@ -52,6 +52,7 @@ router.post('/login', async (req, res) => {
         {
           created: new Date(),
           id: user.id,
+          username,
         },
         process.env.JWT_SECRET,
         {
@@ -174,7 +175,13 @@ router.get('/token', async (req, res) => {
   }
 
   const { id, username } = payload;
-  const storedToken = await db.getRefreshToken(id);
+  const storedData = await db.getRefreshToken(id);
+  if (!storedData) {
+    expireRefreshTokenCookie(res);
+    res.status(401).json({ error: 'Refresh token invalid' });
+    return;
+  }
+  const { token: storedToken } = storedData
 
   // If the refresh token is different, then user must be logged in elsewhere
   // so log them out of this session
